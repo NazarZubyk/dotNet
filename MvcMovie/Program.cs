@@ -76,5 +76,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-Console.WriteLine("Hy from Program ");
+
 app.Run();
