@@ -1,0 +1,35 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore .NET build artifacts
+MvcMovie/bin/
+MvcMovie/obj/
+
+# Ignore .NET database file
+MvcMovie/MvcMovieContext-*.db
+
+# Ignore .NET project files
+MvcMovie/MvcMovie.csproj
+MvcMovie/MvcMovie.csproj.codegeneration.targets
+MvcMovie/MvcMovie.csproj.EntityFrameworkCore.targets
+MvcMovie/MvcMovie.csproj.nuget.dgspec.json
+MvcMovie/MvcMovie.csproj.nuget.g.props
+MvcMovie/MvcMovie.csproj.nuget.g.targets
+
+# Ignore .NET launch settings
+MvcMovie/Properties/launchSettings.json
+
+# Ignore .NET user secrets
+MvcMovie/UserSecrets/
+
+# Ignore React build artifacts
+front/build/
+
+# Ignore React node_modules directory
+front/node_modules/
+
+# Ignore pass.txt file
+pass.txt
+
+# Ignore .NET migration snapshot
+MvcMovie/Migrations/MvcMovieContextModelSnapshot.cs
