@@ -43,19 +43,19 @@ namespace MvcMovie.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult>PutMovieById([FromQuery] int id,[FromBody] Movie movie){
+        public async Task<IActionResult>PutMovieById([FromBody] Movie movie){
             if (!ModelState.IsValid)
             {
                 return new BadRequestResult();
             }
 
-            return await _moviesService.PutMovies(id,movie);
+            return await _moviesService.PutMovies(movie);
 
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteMovieById([FromQuery] int id){
-            return await _moviesService.DeleteMoviesById(id);
+        public async Task<IActionResult> DeleteMovieById([FromBody] Movie movie){
+            return await _moviesService.DeleteMoviesById(movie.Id);
         }
 
 

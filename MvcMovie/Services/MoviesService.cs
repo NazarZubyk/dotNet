@@ -13,7 +13,7 @@ namespace MvcMovie.Services{
         Task<IActionResult> GetMovies();
         Task<IActionResult> GetMoviesById(int id);
         Task<IActionResult> PostMovies(Movie newMovie);
-        Task<IActionResult> PutMovies(int id, Movie updatedMovie);
+        Task<IActionResult> PutMovies( Movie updatedMovie);
         Task<IActionResult> DeleteMoviesById(int id);
     }
 
@@ -57,21 +57,23 @@ namespace MvcMovie.Services{
 
         }
 
-        public async Task<IActionResult>  PutMovies(int id , Movie updatedMovie){
-           var movie = await  _context.Movie.Where(m=>m.Id == id).FirstOrDefaultAsync();
+        public async Task<IActionResult>  PutMovies( Movie updatedMovie){
+            var movie = await _context.Movie.FirstOrDefaultAsync(m => m.Id == updatedMovie.Id);
 
-           if(movie == null){
+            if (movie == null)
+            {
                 return new NotFoundResult();
             }
-            updatedMovie.Id = id;
-            _context.Movie.Update(updatedMovie);
+
+            // Update only the fields that have changed
+            movie.Title = updatedMovie.Title;
+            movie.ReleaseDate = updatedMovie.ReleaseDate;
+            movie.Genre = updatedMovie.Genre;
+            movie.Price = updatedMovie.Price;
+
             await _context.SaveChangesAsync();
 
-           return  new JsonResult(
-            new{
-                movie = updatedMovie
-            }
-           );
+            return new JsonResult(new { movie });
 
         }
 

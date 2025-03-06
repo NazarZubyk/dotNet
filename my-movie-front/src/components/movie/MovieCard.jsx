@@ -1,66 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { API_URL_BACK } from "../../static/configFront";
+import React from "react";
 import { TextField, Button, Card, CardContent } from "@mui/material";
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { updateMoviesState, editMovieField } from "../../features/movie/movieSlice";
+import { deleteMoviesState} from "../../features/movie/movieSlice"
+
+
 const MovieCards = ({
-  title,
-  releaseDate,
-  genre,
-  price,
-  id,
-  onDelete,
-  ...props
+  
+  id
 }) => {
-  const [titleOwn, setTitleOwn] = useState(title);
-  const [releaseDateOwn, setReleaseDateOwn] = useState(
-    releaseDate.slice(0, 10)
+  const dispatch = useAppDispatch()
+  const movie = useAppSelector(state =>
+    state.movies.movies.find(movie => movie.id === id)
   );
-  const [genreOwn, setGenreOwn] = useState(genre);
-  const [priceOwn, setPriceOwn] = useState(price);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetch(`${API_URL_BACK}Movies?id=${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        Title: titleOwn,
-        ReleaseDate: releaseDateOwn,
-        Genre: genreOwn,
-        Price: priceOwn,
-      }),
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        console.log(resp.movie.id)
-        console.log(id)
-        if (resp.movie.id === id) {
-          
-          alert("movie updated");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    dispatch(updateMoviesState({
+          Id : movie.id,
+          Title: movie.title,
+          ReleaseDate: movie.releaseDate,
+          Genre: movie.genre,
+          Price: movie.price,
+    }))
   };
 
-  const handleDelete = () => {
-    fetch(`${API_URL_BACK}Movies?id=${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((resp) => resp.json())
-      .then((resp) => {
-        if (resp.movie.id === id) {
-          onDelete(resp.movie.id );
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  const handleDelete = ()=>{
+      dispatch(deleteMoviesState({
+        Id : movie.id,
+        Title: movie.title,
+        ReleaseDate: movie.releaseDate,
+        Genre: movie.genre,
+        Price: movie.price,
+  }));
+  };
+
+  const handleChange = (event)=>{
+    dispatch(editMovieField({ id, field: event.target.name, value: event.target.value }));
   };
 
   return (
@@ -70,22 +46,25 @@ const MovieCards = ({
           <TextField
             label={"Movie title"}
             type={"text"}
-            value={titleOwn}
-            onChange={(e) => setTitleOwn(e.target.value)}
+            name="title"
+            value={movie.title}
+            onChange={handleChange}
             required={true}
           ></TextField>
           <TextField
             label={"Release date"}
             type={"date"}
-            value={releaseDateOwn}
-            onChange={(e) => setReleaseDateOwn(e.target.value)}
+            name="releaseDate"
+            value={movie.releaseDate.slice(0, 10)}
+            onChange={handleChange}
             required={true}
           ></TextField>
           <TextField
             label={"Genre"}
             type={"text"}
-            value={genreOwn}
-            onChange={(e) => setGenreOwn(e.target.value)}
+            name="genre"
+            value={movie.genre}
+            onChange={handleChange}
             required={true}
           ></TextField>
           <TextField
@@ -93,10 +72,11 @@ const MovieCards = ({
             type={"number"}
             inputMode="decimal"
             step="0.01"
-            value={priceOwn}
-            onChange={(e) => setPriceOwn(e.target.value)}
+            name="price"
+            value={movie.price}
+            onChange={handleChange}
             required={true}
-            error={price < 0}
+            error={movie.price < 0}
           ></TextField>
           <Button type="submit" variant="contained" color="primary">
             Update

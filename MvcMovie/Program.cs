@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy  =>
                       {
-                          policy.WithOrigins("http://localhost:3000")
+                          policy.WithOrigins("http://localhost:5173")
                                 .AllowAnyMethod()
                                 .AllowAnyHeader()
                                 .AllowCredentials();
@@ -35,6 +35,8 @@ builder.Services.AddCors(options =>
 });
 // builder.Services.AddDbContext<MvcMovieContext>(options =>
 //     options.UseSqlite(builder.Configuration.GetConnectionString("MvcMovieContext") ?? throw new InvalidOperationException("Connection string 'MvcMovieContext' not found.")));
+
+
 
 builder.Services.AddDbContext<MvcMovieContext>(options=>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServerConnection") ?? throw new InvalidOperationException("Connection string 'SQLServerConnection' not found."))

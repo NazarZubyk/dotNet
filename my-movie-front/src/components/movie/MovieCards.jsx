@@ -1,24 +1,17 @@
 import { Grid2 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import MovieCard from "../movie/MovieCard"
-
-const MovieCards = ({update}) => {
-  const [movies, setMovies] = useState([]);
-
+import React, { useEffect } from "react";
+import MovieCard from "../movie/MovieCard";
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { selectAllMovies, fetchMoviesState} from "../../features/movie/movieSlice"
+const MovieCards = () => {
+  const dispatch = useAppDispatch()
+  const movies = useAppSelector(selectAllMovies)
+ 
   useEffect(() => {
-    fetch("http://localhost:5019/apiV1/Movies")
-      .then((resp) => {
-        return resp.json();
-      })
-      .then((data) => {
-        setMovies(data.movies);
-      })
-      .catch((err) => console.err(err));
-  }, [update]);
+    dispatch(fetchMoviesState())
+  }, [dispatch]);
 
-  const handleDelete = (id)=>{
-    setMovies(movies.filter((movie)=>movie.id!==id))
-  }
+  
 
   return (
     <Grid2 container spacing={2} margin={2}>
@@ -30,7 +23,6 @@ const MovieCards = ({update}) => {
             genre={movie.genre}
             price={movie.price}
             id={movie.id}
-            onDelete={handleDelete}
           />
         </Grid2>
       ))}

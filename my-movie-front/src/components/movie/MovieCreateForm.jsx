@@ -1,43 +1,40 @@
 import React, { useState } from "react";
-import { API_URL_BACK } from "../../static/configFront";
 import { TextField, Grid2, Button } from "@mui/material";
+import { fetchCreateMovie } from "../../api/movieApi";
+import { useAppDispatch } from '../../app/hooks';
+import { fetchMoviesState} from "../../features/movie/movieSlice"
 
-const MovieCreateForm = ({ onCreate }) => {
-  const [title, setTitle] = useState("");
-  const [releaseDate, setReleaseDate] = useState("");
-  const [genre, setGenre] = useState("");
-  const [price, setPrice] = useState("");
+const MovieCreateForm = () => {
 
-  const handleSubmit = (e) => {
+  const dispatch = useAppDispatch()
+
+  const [movie, setMovie] = useState({
+    title: "",
+    releaseDate: "",
+    genre: "",
+    price: "",
+  });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const data = {
-      Title: title,
-      ReleaseDate: releaseDate,
-      Genre: genre,
-      Price: price,
+      Title: movie.title,
+      ReleaseDate: movie.releaseDate,
+      Genre: movie.genre,
+      Price: movie.price,
     };
 
-    fetch(`${API_URL_BACK}Movies`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+    await fetchCreateMovie(data)
+
+    dispatch(fetchMoviesState())
+
+    setMovie({
+      title: "",
+      releaseDate: "",
+      genre: "",
+      price: "",
     })
-      .then((resp) => {
-        console.log(resp.json());
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-    onCreate();
-
-    setTitle("");
-    setReleaseDate("");
-    setGenre("");
-    setPrice("");
   };
 
   return (
@@ -47,8 +44,11 @@ const MovieCreateForm = ({ onCreate }) => {
           <TextField
             label={"Movie title"}
             type={"text"}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={movie.title}
+            onChange={(e) => setMovie({
+              ...movie,
+              title: e.target.value
+            })}
             required={true}
           ></TextField>
         </Grid2>
@@ -56,8 +56,11 @@ const MovieCreateForm = ({ onCreate }) => {
           <TextField
             label={"Release date"}
             type={"date"}
-            value={releaseDate}
-            onChange={(e) => setReleaseDate(e.target.value)}
+            value={movie.releaseDate}
+            onChange={(e) => setMovie({
+              ...movie,
+              releaseDate: e.target.value
+            })}
             required={true}
           ></TextField>
         </Grid2>
@@ -65,8 +68,11 @@ const MovieCreateForm = ({ onCreate }) => {
           <TextField
             label={"Genre"}
             type={"text"}
-            value={genre}
-            onChange={(e) => setGenre(e.target.value)}
+            value={movie.genre}
+            onChange={(e) => setMovie({
+              ...movie,
+              genre: e.target.value
+            })}
             required={true}
           ></TextField>
         </Grid2>
@@ -76,10 +82,13 @@ const MovieCreateForm = ({ onCreate }) => {
             type={"number"}
             inputMode="decimal"
             step="0.01"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            value={movie.price}
+            onChange={(e) => setMovie({
+              ...movie,
+              price: e.target.value
+            })}
             required={true}
-            error={price < 0}
+            error={movie.price < 0}
           ></TextField>
         </Grid2>
         <Grid2 size={12}>
