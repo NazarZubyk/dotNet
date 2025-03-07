@@ -1,32 +1,36 @@
 import { Grid2 } from "@mui/material";
 import React, { useEffect } from "react";
 import MovieCard from "../movie/MovieCard";
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { selectAllMovies, fetchMoviesState} from "../../features/movie/movieSlice"
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import {
+  selectAllMovies,
+  fetchMoviesState,
+} from "../../features/movie/movieSlice";
 const MovieCards = () => {
-  const dispatch = useAppDispatch()
-  const movies = useAppSelector(selectAllMovies)
- 
+  const dispatch = useAppDispatch();
+  const movies = useAppSelector(selectAllMovies);
+
   useEffect(() => {
-    dispatch(fetchMoviesState())
+    dispatch(fetchMoviesState());
   }, [dispatch]);
 
-  
-
   return (
-    <Grid2 container spacing={2} margin={2}>
+    <div className="flex flex-wrap justify-around gap-4 ">
       {movies.map((movie) => (
-        <Grid2 key={movie.id}>
-          <MovieCard
-            title={movie.title}
-            releaseDate={movie.releaseDate}
-            genre={movie.genre}
-            price={movie.price}
-            id={movie.id}
-          />
-        </Grid2>
+        <div key={movie.id} className="w-60">
+          
+            <MovieCard
+              
+              title={movie.title}
+              releaseDate={movie.releaseDate}
+              genre={movie.genre}
+              price={movie.price}
+              id={movie.id}
+            />
+          
+        </div>
       ))}
-    </Grid2>
+    </div>
   );
 };
 

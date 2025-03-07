@@ -38,9 +38,9 @@ const MovieCreateForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Grid2 container spacing={2} margin={2}>
-        <Grid2 size={12}>
+    <form onSubmit={handleSubmit} className="flex justify-center w-60" >
+      <Grid2 container spacing={2} margin={2} >
+        <Grid2 size={12} >
           <TextField
             label={"Movie title"}
             type={"text"}

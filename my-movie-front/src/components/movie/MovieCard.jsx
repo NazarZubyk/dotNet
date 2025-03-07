@@ -41,8 +41,8 @@ const MovieCards = ({
 
   return (
     <Card>
-      <CardContent>
-        <form onSubmit={handleSubmit}>
+      <CardContent >
+        <form onSubmit={handleSubmit} className="gap-2 flex flex-wrap">
           <TextField
             label={"Movie title"}
             type={"text"}
@@ -51,7 +51,7 @@ const MovieCards = ({
             onChange={handleChange}
             required={true}
           ></TextField>
-          <TextField
+          <TextField 
             label={"Release date"}
             type={"date"}
             name="releaseDate"
