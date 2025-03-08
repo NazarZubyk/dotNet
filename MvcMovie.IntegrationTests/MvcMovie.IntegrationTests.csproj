@@ -22,4 +22,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+     <InternalsVisibleTo Include="MvcMovie.IntegrationTests" />
+  </ItemGroup>
+
 </Project>
