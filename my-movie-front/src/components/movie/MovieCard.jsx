@@ -52,6 +52,7 @@ const MovieCards = ({
             required={true}
           ></TextField>
           <TextField 
+            fullWidth
             label={"Release date"}
             type={"date"}
             name="releaseDate"

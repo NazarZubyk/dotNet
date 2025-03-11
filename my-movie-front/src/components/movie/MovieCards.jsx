@@ -1,4 +1,4 @@
-import { Grid2 } from "@mui/material";
+import {  Grid2 } from "@mui/material";
 import React, { useEffect } from "react";
 import MovieCard from "../movie/MovieCard";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
@@ -19,7 +19,7 @@ const MovieCards = () => {
       {movies.map((movie) => (
         <div key={movie.id} className="w-60">
           
-            <MovieCard
+            <MovieCard 
               
               title={movie.title}
               releaseDate={movie.releaseDate}

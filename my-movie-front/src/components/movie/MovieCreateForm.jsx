@@ -6,6 +6,7 @@ import { fetchMoviesState} from "../../features/movie/movieSlice"
 
 const MovieCreateForm = () => {
 
+
   const dispatch = useAppDispatch()
 
   const [movie, setMovie] = useState({
@@ -49,20 +50,28 @@ const MovieCreateForm = () => {
               ...movie,
               title: e.target.value
             })}
-            required={true}
+            required
           ></TextField>
         </Grid2>
         <Grid2 size={12}>
-          <TextField
-            label={"Release date"}
-            type={"date"}
-            value={movie.releaseDate}
-            onChange={(e) => setMovie({
-              ...movie,
-              releaseDate: e.target.value
-            })}
-            required={true}
-          ></TextField>
+          <div className="border-gray-300 border-1 rounded-sm p-2 group">
+            <label className="text-gray-500 group-focus:text-blue-500">
+              Release date
+            </label>
+            <input 
+              className="focus:border-blue-500"
+              id="releaseDate"
+              type="date"
+              required
+              value={movie.releaseDate}
+              onChange={(e) =>
+                setMovie({
+                  ...movie,
+                  releaseDate: e.target.value,
+                })
+              }
+            />
+          </div>
         </Grid2>
         <Grid2 size={12}>
           <TextField
@@ -92,7 +101,7 @@ const MovieCreateForm = () => {
           ></TextField>
         </Grid2>
         <Grid2 size={12}>
-          <Button variant="contained" color="primary" type="submit">
+          <Button fullWidth variant="contained" color="primary" type="submit">
             Submit
           </Button>
         </Grid2>

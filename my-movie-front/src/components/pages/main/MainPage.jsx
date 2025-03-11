@@ -1,11 +1,10 @@
 import MovieCreateForm from "../../movie/MovieCreateForm";
 import MovieCards from "../../movie/MovieCards";
 import React, { useState } from "react";
-import { Container } from "@mui/material";
 
 const MainPage = () => {
   const [update, setUpdate] = useState(false);
-
+  
   const handleMovieCreate = () => {
     setUpdate(!update);
   };
