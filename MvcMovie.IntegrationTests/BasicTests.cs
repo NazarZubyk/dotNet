@@ -81,7 +81,7 @@ namespace MvcMovie.IntegrationTests.Tests
 
             
 
-            var getResponse = await _client.GetAsync($"/apiV1/Movies?id={createdMovie.Movie.Id}");
+            var getResponse = await _client.GetAsync($"/apiV1/Movies?guid={createdMovie.Movie.MovieGuid}");
             getResponse.EnsureSuccessStatusCode();
             
             
@@ -89,14 +89,14 @@ namespace MvcMovie.IntegrationTests.Tests
             // Deserialize GET response
             var getResponseString = await getResponse.Content.ReadAsStringAsync();
             _output.WriteLine($"Created Movie: {getResponseString}");
-            var fetchedMovie = JsonSerializer.Deserialize<MoviesResponse>(getResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var fetchedMovie = JsonSerializer.Deserialize<MovieResponse>(getResponseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             // Assert - Verify the fetched movie matches the input data
             Assert.NotNull(fetchedMovie);
-            Assert.Equal(testMovie.Title, fetchedMovie.Movie[0].Title);
-            Assert.Equal(testMovie.ReleaseDate, fetchedMovie.Movie[0].ReleaseDate);
-            Assert.Equal(testMovie.Genre, fetchedMovie.Movie[0].Genre);
-            Assert.Equal(testMovie.Price, fetchedMovie.Movie[0].Price);
+            Assert.Equal(testMovie.Title, fetchedMovie.Movie.Title);
+            Assert.Equal(testMovie.ReleaseDate, fetchedMovie.Movie.ReleaseDate);
+            Assert.Equal(testMovie.Genre, fetchedMovie.Movie.Genre);
+            Assert.Equal(testMovie.Price, fetchedMovie.Movie.Price);
         }
 
         [Fact]
@@ -119,8 +119,9 @@ namespace MvcMovie.IntegrationTests.Tests
             var response = await _client.PostAsync("/apiV1/Movies", jsonContent);
 
             response.EnsureSuccessStatusCode();
-
+            
             var responseString = await response.Content.ReadAsStringAsync();
+        
             var createdMovie = JsonSerializer.Deserialize<MovieResponse>(responseString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             Assert.NotNull(createdMovie);
@@ -141,7 +142,8 @@ namespace MvcMovie.IntegrationTests.Tests
             deleteResponse.EnsureSuccessStatusCode();  
 
             
-            var getResponse = await _client.GetAsync($"/apiV1/Movies/{createdMovie.Movie.Id}");
+            var getResponse = await _client.GetAsync($"/apiV1/Movies/?guid={createdMovie.Movie.MovieGuid}");
+            _output.WriteLine("safdsa +" + await getResponse.Content.ReadAsStringAsync());
             Assert.False(getResponse.IsSuccessStatusCode); 
 
             Assert.Equal(System.Net.HttpStatusCode.NotFound, getResponse.StatusCode);

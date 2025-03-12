@@ -1,8 +1,10 @@
 
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using MvcMovie.Data;
+using MvcMovie.Dtos;
 using MvcMovie.Models;
 using NuGet.Protocol;
 
@@ -11,33 +13,38 @@ namespace MvcMovie.Services{
     public interface IMoviesService
     {
         Task<IActionResult> GetMovies();
-        Task<IActionResult> GetMoviesById(int id);
-        Task<IActionResult> PostMovies(Movie newMovie);
-        Task<IActionResult> PutMovies( Movie updatedMovie);
-        Task<IActionResult> DeleteMoviesById(int id);
+        Task<IActionResult> GetMoviesByGuid(Guid guid);
+        Task<IActionResult> PostMovies(MovieDTO newMovie);
+        Task<IActionResult> PutMovies( MovieDTO updatedMovie);
+        Task<IActionResult> DeleteMoviesByGuid(Guid guid);
     }
 
     public class MoviesService: IMoviesService{
         private readonly MvcMovieContext _context;
+        private readonly IMapper _mapper;
 
-        public MoviesService(MvcMovieContext context){
+        public MoviesService(MvcMovieContext context, IMapper mapper){
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult>  GetMovies(){
            var movies = await  _context.Movie.ToListAsync();
-            
+           var movieDTOs = _mapper.Map<List<MovieDTO>>(movies);
            return new JsonResult(
             new{
-                movies
+                movies = movieDTOs
             }
            );
 
         }
 
-        public async Task<IActionResult>  GetMoviesById(int id){
-           var movie = await  _context.Movie.Where(m=>m.Id == id).ToListAsync();
-
+        public async Task<IActionResult>  GetMoviesByGuid(Guid guid){
+           var movie = await  _context.Movie.Where(m=>m.MovieGuid == guid).FirstOrDefaultAsync();
+            if (movie == null)
+            {
+                return new  NotFoundResult();
+            }
            return new JsonResult(
             new{
                 movie
@@ -46,8 +53,10 @@ namespace MvcMovie.Services{
 
         }
 
-        public async Task<IActionResult>  PostMovies(Movie newMovie){
-           var movieEntry = await  _context.Movie.AddAsync(newMovie);
+        public async Task<IActionResult>  PostMovies(MovieDTO newMovie){
+           var  movie = _mapper.Map<Movie>(newMovie);
+           movie.MovieGuid = Guid.NewGuid();
+           var movieEntry = await  _context.Movie.AddAsync(movie);
            await _context.SaveChangesAsync();
            return new JsonResult(
             new{
@@ -57,19 +66,15 @@ namespace MvcMovie.Services{
 
         }
 
-        public async Task<IActionResult>  PutMovies( Movie updatedMovie){
-            var movie = await _context.Movie.FirstOrDefaultAsync(m => m.Id == updatedMovie.Id);
-
+        public async Task<IActionResult>  PutMovies( MovieDTO updatedMovie){
+            var movie = await _context.Movie.FirstOrDefaultAsync(m => m.MovieGuid == updatedMovie.MovieGuid);
+            
             if (movie == null)
             {
                 return new NotFoundResult();
             }
 
-            // Update only the fields that have changed
-            movie.Title = updatedMovie.Title;
-            movie.ReleaseDate = updatedMovie.ReleaseDate;
-            movie.Genre = updatedMovie.Genre;
-            movie.Price = updatedMovie.Price;
+            _mapper.Map(updatedMovie, movie);
 
             await _context.SaveChangesAsync();
 
@@ -77,8 +82,9 @@ namespace MvcMovie.Services{
 
         }
 
-        public async Task<IActionResult>  DeleteMoviesById(int id){
-           var movie = await  _context.Movie.Where(m=>m.Id == id).FirstOrDefaultAsync();
+        public async Task<IActionResult>  DeleteMoviesByGuid(Guid guid){
+            System.Console.WriteLine(guid);
+           var movie = await  _context.Movie.Where(m=>m.MovieGuid == guid).FirstOrDefaultAsync();
 
             if(movie == null){
                 return new NotFoundResult();

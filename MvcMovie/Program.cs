@@ -3,20 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using MvcMovie.Data;
 using MvcMovie.Models;
 using MvcMovie.Services;
+using MvcMovie.Mappings;
 
-
-// var builder = WebApplication.CreateBuilder(args);
-
-// if (builder.Environment.IsDevelopment())
-// {
-//     builder.Services.AddDbContext<MvcMovieContext>(options =>
-//         options.UseSqlite(builder.Configuration.GetConnectionString("MvcMovieContext")));
-// }
-// else
-// {
-//     builder.Services.AddDbContext<MvcMovieContext>(options =>
-//         options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionMvcMovieContext")));
-// }
 
 var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -33,9 +21,6 @@ builder.Services.AddCors(options =>
                                 .AllowCredentials();
                       });
 });
-// builder.Services.AddDbContext<MvcMovieContext>(options =>
-//     options.UseSqlite(builder.Configuration.GetConnectionString("MvcMovieContext") ?? throw new InvalidOperationException("Connection string 'MvcMovieContext' not found.")));
-
 
 
 builder.Services.AddDbContext<MvcMovieContext>(options=>
@@ -46,6 +31,8 @@ builder.Services.AddTransient<IMoviesService, MoviesService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAutoMapper(typeof(MovieProfile));
 
 var app = builder.Build();
 

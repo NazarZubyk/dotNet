@@ -38,20 +38,20 @@ const moviesSlice = createSlice({
     reducers: {
         deleteMovie : (state, action)=>{
             console.log(action.payload)
-            state.movies = state.movies.filter(movie => movie.id !== action.payload.movie.id);
+            state.movies = state.movies.filter(movie => movie.movieGuid !== action.payload.movie.movieGuid);
         },
         addMovie : (state, action)=>{
             state.movies.push(action.payload.movie)
         },
         updateMovie : (state, action)=>{
-            const index = state.movies.findIndex(movie => movie.id === action.payload.movie.id);
+            const index = state.movies.findIndex(movie => movie.movieGuid === action.payload.movie.movieGuid);
             if(index !== -1){
                 state.movies[index] = action.payload.movie
             }
         },
         editMovieField: (state, action) => {
-            const { id, field, value } = action.payload;
-            const movie = state.movies.find(movie => movie.id === id);
+            const { movieGuid, field, value } = action.payload;
+            const movie = state.movies.find(movie => movie.movieGuid === movieGuid);
             
             if (movie) {
                 movie[field] = value;  
@@ -79,7 +79,7 @@ const moviesSlice = createSlice({
             })
             .addCase(updateMoviesState.fulfilled,(state, action)=>{
                 state.loading = false;
-                const index = state.movies.findIndex((movie) => movie.id === action.payload.movie.id);
+                const index = state.movies.findIndex((movie) => movie.movieGuid === action.payload.movie.movieGuid);
                 if (index !== -1) {
                     state.movies[index] = action.payload.movie;
                 } 
@@ -95,7 +95,7 @@ const moviesSlice = createSlice({
             })
             .addCase(deleteMoviesState.fulfilled, (state, action) => {
                 state.loading = false;
-                const index = state.movies.findIndex((movie) => movie.id === action.payload.movie.id);
+                const index = state.movies.findIndex((movie) => movie.movieGuid === action.payload.movie.movieGuid);
                 if (index !== -1) {
                     state.movies.splice(index, 1);
                 }

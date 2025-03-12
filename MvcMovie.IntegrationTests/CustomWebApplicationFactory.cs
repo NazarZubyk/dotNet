@@ -30,7 +30,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             var scopedServices = scope.ServiceProvider;
             var db = scopedServices.GetRequiredService<MvcMovieContext>();
 
-            db.Database.EnsureDeleted(); // Reset database for a clean state
+            db.Database.EnsureDeleted();// Reset database for a clean state
             db.Database.Migrate();       // Apply latest migrations
         });
     }

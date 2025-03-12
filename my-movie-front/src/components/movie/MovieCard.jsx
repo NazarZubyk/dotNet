@@ -7,36 +7,24 @@ import { deleteMoviesState} from "../../features/movie/movieSlice"
 
 const MovieCards = ({
   
-  id
+  movieGuid
 }) => {
   const dispatch = useAppDispatch()
   const movie = useAppSelector(state =>
-    state.movies.movies.find(movie => movie.id === id)
+    state.movies.movies.find(movie => movie.movieGuid === movieGuid)
   );
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(updateMoviesState({
-          Id : movie.id,
-          Title: movie.title,
-          ReleaseDate: movie.releaseDate,
-          Genre: movie.genre,
-          Price: movie.price,
-    }))
+    dispatch(updateMoviesState(movie))
   };
 
   const handleDelete = ()=>{
-      dispatch(deleteMoviesState({
-        Id : movie.id,
-        Title: movie.title,
-        ReleaseDate: movie.releaseDate,
-        Genre: movie.genre,
-        Price: movie.price,
-  }));
+      dispatch(deleteMoviesState(movie));
   };
 
   const handleChange = (event)=>{
-    dispatch(editMovieField({ id, field: event.target.name, value: event.target.value }));
+    dispatch(editMovieField({ movieGuid, field: event.target.name, value: event.target.value }));
   };
 
   return (

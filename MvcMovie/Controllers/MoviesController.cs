@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcMovie.Data;
+using MvcMovie.Dtos;
 using MvcMovie.Models;
 using MvcMovie.Services;
+using NuGet.Protocol;
 
 namespace MvcMovie.Controllers
 {
@@ -22,10 +24,10 @@ namespace MvcMovie.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMovies([FromQuery] int? id){
-            if (id.HasValue)
+        public async Task<IActionResult> GetMovies([FromQuery] Guid? guid){
+            if (guid.HasValue)
             {
-                return await _moviesService.GetMoviesById(id.Value);
+                return await _moviesService.GetMoviesByGuid(guid.Value);
             }
             else
             {
@@ -34,7 +36,7 @@ namespace MvcMovie.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostMovie([FromBody] Movie movie){
+        public async Task<IActionResult> PostMovie([FromBody] MovieDTO movie){
             if (!ModelState.IsValid)
             {
                 return new BadRequestResult();
@@ -43,7 +45,7 @@ namespace MvcMovie.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult>PutMovieById([FromBody] Movie movie){
+        public async Task<IActionResult>PutMovieById([FromBody] MovieDTO movie){
             if (!ModelState.IsValid)
             {
                 return new BadRequestResult();
@@ -54,8 +56,12 @@ namespace MvcMovie.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteMovieById([FromBody] Movie movie){
-            return await _moviesService.DeleteMoviesById(movie.Id);
+        public async Task<IActionResult> DeleteMovieByGuid([FromBody] MovieDTO movie){
+            if (!ModelState.IsValid)
+            {
+                return new BadRequestResult();
+            }
+            return await _moviesService.DeleteMoviesByGuid(movie.MovieGuid);
         }
 
 
