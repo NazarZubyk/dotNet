@@ -1,11 +1,23 @@
 import React, { useState } from "react";
-import { TextField, Grid2, Button } from "@mui/material";
+import { TextField, Grid2, Button, styled} from "@mui/material";
 import { fetchCreateMovie } from "../../api/movieApi";
 import { useAppDispatch } from '../../app/hooks';
 import { fetchMoviesState} from "../../features/movie/movieSlice"
 
 const MovieCreateForm = () => {
 
+  const MyButton = styled(Button)({
+    backgroundColor: '#e3f2fd',         
+    color: '#1976d2',                  
+    padding: '10px 20px',
+    fontWeight: 'bold',
+    borderRadius: '8px',           
+    boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.1)', 
+    '&:hover': {
+      backgroundColor: '#bbdefb',       
+      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.15)', 
+    },
+  });
 
   const dispatch = useAppDispatch()
 
@@ -54,12 +66,12 @@ const MovieCreateForm = () => {
           ></TextField>
         </Grid2>
         <Grid2 size={12}>
-          <div className="border-gray-300 border-1 rounded-sm p-2 group">
-            <label className="text-gray-500 group-focus:text-blue-500">
+          <div className="border-gray-300 border-1 rounded-sm p-2  hover:border-gray-400" >
+            <label className="text-gray-500">
               Release date
             </label>
             <input 
-              className="focus:border-blue-500"
+              className=""
               id="releaseDate"
               type="date"
               required
@@ -101,9 +113,9 @@ const MovieCreateForm = () => {
           ></TextField>
         </Grid2>
         <Grid2 size={12}>
-          <Button fullWidth variant="contained" color="primary" type="submit">
+          <MyButton fullWidth type="submit">
             Submit
-          </Button>
+          </MyButton>
         </Grid2>
       </Grid2>
     </form>
