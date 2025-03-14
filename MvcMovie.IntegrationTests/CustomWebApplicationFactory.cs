@@ -23,7 +23,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
             // Add a new SQL Server database for testing
             services.AddDbContext<MvcMovieContext>(options =>
-                options.UseSqlServer("Server=localhost,1433;Database=testDB2022;User Id=sa;Password=myLocalSuperPass22;TrustServerCertificate=True"));
+                options.UseSqlServer("Server=sqlserver,1433;Database=TestDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True"));
 
             // Apply migrations
             using var scope = services.BuildServiceProvider().CreateScope();

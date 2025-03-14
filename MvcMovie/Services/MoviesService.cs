@@ -1,12 +1,10 @@
 
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using MvcMovie.Data;
 using MvcMovie.Dtos;
 using MvcMovie.Models;
-using NuGet.Protocol;
 
 namespace MvcMovie.Services{
 
