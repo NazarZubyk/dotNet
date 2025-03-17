@@ -2,9 +2,11 @@
 {
     # Global options
     admin off  # Disable the admin API for security
+
+    email nazarzubyk@gmail.com
 }
 
-http://localhost {
+nazarzo.site {
     # Enable logging
     log {
         format console
@@ -25,6 +27,10 @@ http://localhost {
         file_server
     }
 
+      # Force HTTPS redirects
+    tls {
+        issuer acme
+    }
     # Enable compression
     encode gzip
 }
