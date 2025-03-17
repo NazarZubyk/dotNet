@@ -1,0 +1,30 @@
+# Caddyfile
+{
+    # Global options
+    admin off  # Disable the admin API for security
+}
+
+http://localhost {
+    # Enable logging
+    log {
+        format console
+    }
+
+    # Serve the frontend static files
+    root * /srv
+    
+    # Handle API requests - proxy to backend service
+    handle /apiV1/* {
+        reverse_proxy backend:8080
+    }
+
+    # For all other requests, try serving static files
+    # If not found, serve index.html (for SPA routing)
+    handle {
+        try_files {path} /index.html
+        file_server
+    }
+
+    # Enable compression
+    encode gzip
+}

@@ -1,11 +1,12 @@
 #!/bin/sh
-set -e
+set -e  # Exit on first error
 
-echo "Waiting for SQL Server to start..."
-sleep 10  # Give the database time to initialize
+# Wait for SQL Server to be ready
+echo "Waiting for SQL Server to be ready..."
+until nc -z -v -w30 sqlserver 1433; do
+  echo "Database is not ready yet. Retrying in 5 seconds..."
+  sleep 5
+done
 
-echo "Applying database migrations..."
-dotnet ef database update --connection "Server=sqlserver,1433;Database=MvcMovieDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;"
-
-echo "Starting the backend server..."
+echo "Database is ready. Starting the application..."
 exec dotnet MvcMovie.dll
