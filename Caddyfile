@@ -2,19 +2,21 @@
 {
     # Global options
     admin off  # Disable the admin API for security
-
     email nazarzubyk@gmail.com
+    auto_https off
 }
 
-nazarzo.site {
+:80 {
     # Enable logging
     log {
         format console
     }
 
+    
+
     # Serve the frontend static files
     root * /srv
-    
+
     # Handle API requests - proxy to backend service
     handle /apiV1/* {
         reverse_proxy backend:8080
@@ -27,10 +29,7 @@ nazarzo.site {
         file_server
     }
 
-      # Force HTTPS redirects
-    tls {
-        issuer acme
-    }
     # Enable compression
     encode gzip
 }
+
