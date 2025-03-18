@@ -15,7 +15,6 @@ MvcMovie.IntegrationTests/obj/
 MvcMovie/MvcMovieContext-*.db
 
 # Ignore .NET project files
-MvcMovie/MvcMovie.csproj
 MvcMovie/MvcMovie.csproj.codegeneration.targets
 MvcMovie/MvcMovie.csproj.EntityFrameworkCore.targets
 MvcMovie/MvcMovie.csproj.nuget.dgspec.json
