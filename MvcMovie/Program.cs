@@ -24,9 +24,14 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddDbContext<MvcMovieContext>(options=>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServerConnection") ?? throw new InvalidOperationException("Connection string 'SQLServerConnection' not found."))
-    );
+if (!builder.Environment.IsEnvironment("Test"))
+{
+
+    // Use SQL Server in Development/Production Environment
+    builder.Services.AddDbContext<MvcMovieContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServerConnection") 
+            ?? throw new InvalidOperationException("Connection string 'SQLServerConnection' not found.")));
+}
 
 builder.Services.AddTransient<IMoviesService, MoviesService>();
 
@@ -40,6 +45,8 @@ builder.Services.AddAutoMapper(typeof(MovieProfile));
 
 var app = builder.Build();
 
+if (!builder.Environment.IsEnvironment("Test"))
+{
     try
     {
         using (var scope = app.Services.CreateScope())
@@ -56,7 +63,7 @@ var app = builder.Build();
         Console.WriteLine($"An error occurred while applying migrations: {ex.Message}");
         throw;
     }
-
+}
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

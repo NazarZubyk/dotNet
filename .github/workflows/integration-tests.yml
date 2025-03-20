@@ -8,19 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      sqlserver:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        env:
-          ACCEPT_EULA: "Y"
-          SA_PASSWORD: "YourStrong!Passw0rd"
-        ports:
-          - "1433:1433"
-        options: >-
-          --health-cmd "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'YourStrong!Passw0rd' -Q 'SELECT 1' || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+
     
     steps:
       - name: Checkout code
@@ -34,14 +22,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
         
-      - name: Create Test Database
-        run: |
-          sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "CREATE DATABASE TestDb"
+      
         
       - name: Run Tests
         env:
-          ASPNETCORE_ENVIRONMENT: "Testing"
-          ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=TestDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True"
+          ASPNETCORE_ENVIRONMENT: "Test"
         run: dotnet test --filter Category=Integration --logger trx --results-directory TestResults
         
       - name: Upload Test Results

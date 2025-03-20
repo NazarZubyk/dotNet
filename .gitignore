@@ -9,7 +9,6 @@ MvcMovie/obj/
 
 MvcMovie.IntegrationTests/bin
 MvcMovie.IntegrationTests/obj
-
 # Ignore .NET database file
 MvcMovie/MvcMovieContext-*.db
 

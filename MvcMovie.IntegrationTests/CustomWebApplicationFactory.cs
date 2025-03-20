@@ -12,26 +12,27 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureServices(services =>
         {
-            // Remove existing DbContext registration
+            // Remove existing DbContext registration to avoid conflicts
             var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<MvcMovieContext>));
             if (descriptor != null)
             {
                 services.Remove(descriptor);
             }
 
-            
-
-            // Add a new SQL Server database for testing
+            // Register In-Memory Database for testing
             services.AddDbContext<MvcMovieContext>(options =>
-                options.UseSqlServer("Server=sqlserver,1433;Database=TestDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True"));
-
-            // Apply migrations
+                options.UseInMemoryDatabase("TestingDb"));
+            
+            // Create and seed the database
             using var scope = services.BuildServiceProvider().CreateScope();
             var scopedServices = scope.ServiceProvider;
             var db = scopedServices.GetRequiredService<MvcMovieContext>();
 
-            db.Database.EnsureDeleted();// Reset database for a clean state
-            db.Database.Migrate();       // Apply latest migrations
+            db.Database.EnsureDeleted(); // Reset database for a clean state
+            db.Database.EnsureCreated(); // Create database schema
+
+            // Seed test data here if needed
+            // SeedData.Initialize(db);
         });
     }
 }
