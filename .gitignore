@@ -1,3 +1,5 @@
+.env
+cloudflared/cert.pem
 # Ignore node_modules directory
 node_modules/
 
@@ -5,11 +7,14 @@ node_modules/
 MvcMovie/bin/
 MvcMovie/obj/
 
+# Ignore .NET build artifacts
+MvcMovie.IntegrationTests/bin/
+MvcMovie.IntegrationTests/obj/
+
 # Ignore .NET database file
 MvcMovie/MvcMovieContext-*.db
 
 # Ignore .NET project files
-MvcMovie/MvcMovie.csproj
 MvcMovie/MvcMovie.csproj.codegeneration.targets
 MvcMovie/MvcMovie.csproj.EntityFrameworkCore.targets
 MvcMovie/MvcMovie.csproj.nuget.dgspec.json

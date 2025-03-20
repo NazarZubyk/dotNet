@@ -1,0 +1,125 @@
+version: '3.9'
+
+services:
+  sqlcmd:
+    image: mcr.microsoft.com/mssql-tools
+    depends_on:
+      - sqlserver
+    entrypoint: >
+      /bin/bash -c "
+      echo 'Waiting for SQL Server...';
+      sleep 40;
+      echo 'Executing init script...';
+      /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P 'YourStrong!Passw0rd' -d master -i /tmp/init.sql"
+    volumes:
+      - ./init.sql:/tmp/init.sql
+    networks:
+      - backend-network
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    restart: always
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      TrustServerCertificate: "true"
+    ports:
+      - "1433:1433"
+    networks:
+      - backend-network
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    command: /bin/bash -c "/opt/mssql/bin/sqlservr > /dev/null 2>&1 & wait"
+
+  # integration-tests:
+  #   build:
+  #     context: .
+  #     dockerfile: MvcMovie.IntegrationTests/Dockerfile
+  #   depends_on:
+  #     - sqlserver
+  #   networks:
+  #     - backend-network
+  #   environment:
+  #     - SQLServerConnection=Server=sqlserver,1433;Database=TestDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+
+  backend:
+    build:
+      context: .
+      dockerfile: MvcMovie/Dockerfile
+    depends_on:
+      - sqlserver
+      - sqlcmd
+    networks:
+      - backend-network
+    environment:
+      - SQLServerConnection=Server=sqlserver,1433;Database=MvcMovieDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+    expose:
+      - "5000"
+      - "5001"
+    ports:
+      - "8080:5000" 
+
+
+  frontend:
+    build:
+      context: ./my-movie-front
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    networks:
+      - frontend-network
+    expose:
+      - "80"
+      - "443"
+
+
+
+  caddy:
+    build:
+      context: ./caddy
+      dockerfile: Dockerfile
+    container_name: caddy
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./my-movie-front/dist:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - frontend-network
+      - backend-network
+      - caddy-cloudflare-network
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    environment:
+      - CLOUDFLARE_TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    volumes:
+      - ./cloudflared/config.yml:/etc/cloudflared/config.yml
+    networks:
+      - caddy-cloudflare-network
+
+
+
+networks:
+  backend-network:
+  frontend-network:
+  caddy-cloudflare-network:
+  
+
+volumes:
+  sqlserver_data:
+  caddy_data:
+  caddy_config:
