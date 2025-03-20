@@ -1,0 +1,7 @@
+Copytunnel: 777ae545-8a78-426e-9ec1-9a1a8604165e
+credentials-file: /etc/cloudflared/cert.pem  # Use the cert.pem you're mounting
+
+ingress:
+  - hostname: nazarzo.site
+    service: http://caddy:80
+  - service: http_status:404
