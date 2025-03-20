@@ -33,24 +33,27 @@ services:
       - sqlserver_data:/var/opt/mssql
     command: /bin/bash -c "/opt/mssql/bin/sqlservr > /dev/null 2>&1 & wait"
 
-  # integration-tests:
-  #   build:
-  #     context: .
-  #     dockerfile: MvcMovie.IntegrationTests/Dockerfile
-  #   depends_on:
-  #     - sqlserver
-  #   networks:
-  #     - backend-network
-  #   environment:
-  #     - SQLServerConnection=Server=sqlserver,1433;Database=TestDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+  integration-tests:
+    build:
+      context: .
+      dockerfile: MvcMovie.IntegrationTests/Dockerfile
+    networks:
+      - backend-network
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Test"
+   
 
   backend:
     build:
       context: .
       dockerfile: MvcMovie/Dockerfile
     depends_on:
-      - sqlserver
-      - sqlcmd
+      integration-tests:
+        condition: service_completed_successfully
+      sqlserver:
+        condition: service_started
+      sqlcmd:
+        condition: service_started
     networks:
       - backend-network
     environment:
