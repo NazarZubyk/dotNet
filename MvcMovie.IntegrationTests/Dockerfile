@@ -16,5 +16,6 @@ RUN dotnet build -c Release
 # Build the solution in Release mode (to match the production environment)
 RUN dotnet build -c Release
 
+
 # Run tests (replace `your_test_dll` with actual test DLL name)
 CMD ["dotnet", "test", "--logger", "trx"]

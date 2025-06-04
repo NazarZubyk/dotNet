@@ -44,8 +44,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MovieProfile));
 
 var app = builder.Build();
- 
- 
+
 if (!builder.Environment.IsEnvironment("Test"))
 {
     try
